@@ -2,7 +2,9 @@ package com.mygitgor.algorithm;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * V__1
@@ -26,24 +28,34 @@ public class LengthOfTheShortestPath {
      * Если пути нет, нужно вывести -1.
      */
     public static void main(String[] args) throws IOException {
+        /*
+         * 10 N
+         * 0 1 0 0 0 0 0 0 0 0
+         * 1 0 0 1 1 0 1 0 0 0
+         * 0 0 0 0 1 0 0 0 1 0
+         * 0 1 0 0 0 0 1 0 0 0
+         * 0 1 1 0 0 0 0 0 0 1
+         * 0 0 0 0 0 0 1 0 0 1
+         * 0 1 0 1 0 1 0 0 0 0
+         * 0 0 0 0 0 0 0 0 1 0
+         * 0 0 1 0 0 0 0 1 0 0
+         * 0 0 0 0 1 1 0 0 0 0
+         * 5 4 numbers of two vertices - the start and end.
+         */
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
              BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out)))
         {
-            String[] input = reader.readLine().split(" ");
-            int N = Integer.parseInt(input[0]);
-            int M = Integer.parseInt(input[1]);
+            int N = Integer.parseInt(reader.readLine());
 
             List<List<Integer>> graph = new ArrayList<>(N);
             for (int i = 0; i < N; i++) {
                 graph.add(new ArrayList<>());
-            }
-
-            for (int i = 0; i < M; i++) {
-                String[] edge = reader.readLine().split(" ");
-                int u = Integer.parseInt(edge[0]) - 1;
-                int v = Integer.parseInt(edge[1]) - 1;
-                graph.get(u).add(v);
-                graph.get(v).add(u);
+                String[] row = reader.readLine().split(" ");
+                for (int j = 0; j < N; j++) {
+                    if (row[j].equals("1")) {
+                        graph.get(i).add(j);
+                    }
+                }
             }
 
             String[] lastLine = reader.readLine().split(" ");
@@ -57,9 +69,31 @@ public class LengthOfTheShortestPath {
     }
 
     private static int bfs(List<List<Integer>> graph, int start, int end){
-        if (start == end) {
-            return 0;
+        if (start == end) return 0;
+
+        Queue<Integer>queue = new LinkedList<>();
+        boolean[] visited = new boolean[graph.size()];
+        int[] distance = new int[graph.size()];
+
+        queue.add(start);
+        visited[start]=true;
+        distance[start]= 0;
+
+        while (!queue.isEmpty()){
+            int current = queue.poll();
+
+            for(int neighbor : graph.get(current)){
+                if(!visited[neighbor]){
+                    if(neighbor == end){
+                        return distance[current] + 1;
+                    }
+                    visited[neighbor]=true;
+                    distance[neighbor] = distance[current] + 1;
+                    queue.add(neighbor);
+                }
+            }
         }
+
         return -1;
     }
 }
