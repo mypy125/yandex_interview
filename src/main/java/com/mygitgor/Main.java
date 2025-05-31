@@ -6,7 +6,6 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
 
-
     }
 
     public static List<Integer> commonElementsInArray(int[] nums1, int[] nums2) {
